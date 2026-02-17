@@ -11,8 +11,20 @@
             margin: 0;
             font-family: 'Roboto', sans-serif;
             display: flex;
+            flex-direction: column;
+            /* Stack sections vertically */
             height: 100vh;
             background-color: #f7f7f7;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            /* Take up available height */
+            flex-direction: row;
+            /* Align sections side by side */
+            flex-wrap: wrap;
+            /* Allow wrapping on smaller screens */
         }
         
         .left-section {
@@ -20,10 +32,15 @@
             background: #C8102E;
             /* Dark Red */
             display: flex;
-            justify-content: flex-start;
+            flex-direction: column;
+            /* Stack items vertically */
+            justify-content: center;
             align-items: center;
+            /* Center items horizontally */
             padding: 40px;
             color: white;
+            text-align: center;
+            /* Center text */
         }
         
         .right-section {
@@ -37,6 +54,7 @@
         .login-form {
             width: 100%;
             max-width: 400px;
+            /* Limit max width for larger screens */
             background: white;
             border-radius: 5px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -50,6 +68,8 @@
         
         .form-group {
             margin-bottom: 15px;
+            text-align: left;
+            /* Align text to the left */
         }
         
         label {
@@ -58,13 +78,9 @@
             color: #333;
         }
         
-        input[type="text"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        input[type="radio"] {
+            margin-right: 10px;
+            /* Space between radio button and label */
         }
         
         button {
@@ -99,40 +115,74 @@
             /* Adjust the size as needed */
             margin-bottom: 20px;
         }
+        /* Responsive Styles */
+        
+        @media (max-width: 768px) {
+            .left-section {
+                padding: 20px;
+            }
+            .login-form {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .left-section {
+                padding: 10px;
+            }
+            .login-form {
+                padding: 10px;
+            }
+            .logo {
+                max-width: 100px;
+                /* Smaller logo for mobile */
+            }
+            .content {
+                flex-direction: column;
+                /* Stack sections on small screens */
+                height: auto;
+                /* Allow height to adjust */
+            }
+            .left-section,
+            .right-section {
+                width: 100%;
+                /* Full width on mobile */
+                text-align: center;
+                /* Center text on mobile */
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="left-section">
-        <div>
+    <div class="content">
+        <div class="left-section">
             <img src="Airtel-Emblema.png" alt="Equity Logo" class="logo">
-            <!-- Replace with actual logo URL -->
-            <h1>Welcome to Equity online</h1>
+            <h1>Welcome to Equity Online</h1>
             <p>More than just banking.</p>
         </div>
-    </div>
-    <div class="right-section">
-        <div class="login-form">
-            <h2>Verify</h2>
-            <p>How would you like to get verified? Select one of the options below:</p>
+        <div class="right-section">
+            <div class="login-form">
+                <h2>Verify</h2>
+                <p>How would you like to get verified? Select one of the options below:</p>
 
-            <div class="form-group">
-                <input type="radio" id="by-sms" name="verification" value="sms" checked>
-                <label for="by-sms">By SMS</label>
-                <p>1234567890</p>
+                <div class="form-group">
+                    <input type="radio" id="by-sms" name="verification" value="sms" checked>
+                    <label for="by-sms">By SMS</label>
+                    <p>254************</p>
+                </div>
+
+                <div class="form-group">
+                    <input type="radio" id="by-email" name="verification" value="email">
+                    <label for="by-email">By Email</label>
+                    <p>************@gmail.com</p>
+                </div>
+
+                <button id="next-button">Next</button>
+                <p class="footer">English</p>
             </div>
-
-            <div class="form-group">
-                <input type="radio" id="by-email" name="verification" value="email">
-                <label for="by-email">By Email</label>
-                <p>************@gmail.com</p>
-            </div>
-
-            <button id="next-button">Next</button>
-            <p class="footer">English</p>
         </div>
-    </div>
     </div>
 
     <script>
